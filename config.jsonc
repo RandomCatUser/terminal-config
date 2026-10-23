@@ -1,0 +1,54 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+  // ═══════════════════════════════════════════════════════════════
+  //  LOGO
+  // ═══════════════════════════════════════════════════════════════
+  "logo": {
+    "type": "file-raw",
+    "source": "C:/Users/cat/.config/fastfetch/logo.txt",
+    "padding": {
+      "top": 1,
+      "left": 1,
+      "right": 4
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  //  DISPLAY
+  // ═══════════════════════════════════════════════════════════════
+  "display": {
+    "separator": "  ",
+    "key": {
+      "width": 12
+    },
+    "color": {
+      "keys": "#ff8fd0",
+      "title": "#ff8fd0"
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  //  MODULES — key = icon + label  (Nerd Font glyphs)
+  // ═══════════════════════════════════════════════════════════════
+  "modules": [
+    { "type": "title" },
+    { "type": "separator", "string": "─", "times": 26, "outputColor": "#7a6bf2" },
+    "break",
+
+    // ── System ──
+    { "type": "os",     "key": "\ue8e5 OS" },
+    { "type": "kernel", "key": "\uf17c Kernel" },
+    { "type": "uptime", "key": "\uf017 Uptime" },
+    "break",
+
+    // ── Session ──
+    { "type": "shell",        "key": "\uf120 Shell" },
+    { "type": "terminal",     "key": "\uf489 Terminal" },
+    { "type": "terminalfont", "key": "\uf031 Font" },
+    "break",
+
+    // ── Palette ──
+    { "type": "colors", "symbol": "circle" }
+  ]
+}
