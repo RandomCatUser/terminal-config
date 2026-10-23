@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terminal Config — a soft Windows terminal setup</title>
+<meta name="description" content="fastfetch + oh-my-posh + JetBrainsMono Nerd Font + Windows Terminal, in Catppuccin Mocha pink. Interactive installer, asks before it touches anything.">
+<style>
+  :root {
+    --bg: #1e1e2e;
+    --bg-soft: #181825;
+    --surface: #313244;
+    --text: #cdd6f4;
+    --muted: #a6adc8;
+    --pink: #ff8fd0;
+    --violet: #7a6bf2;
+    --blue: #89b4fa;
+    --lavender: #b4befe;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "JetBrainsMono NF", "JetBrainsMono NFM", "JetBrains Mono", Consolas, monospace;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+  header { padding: 3.5rem 0 2.5rem; text-align: center; }
+  h1 {
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    font-weight: 800;
+    background: linear-gradient(100deg, var(--pink), var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+  }
+  .tagline { color: var(--muted); margin-top: 0.9rem; font-size: 1.02rem; }
+  .tagline b { color: var(--pink); font-weight: 600; }
+  .buttons { margin-top: 2.2rem; display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 0.85rem 1.7rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-pink {
+    background: linear-gradient(100deg, var(--pink), var(--violet));
+    color: var(--bg);
+    box-shadow: 0 6px 22px rgba(255, 143, 208, 0.25);
+  }
+  .btn-ghost {
+    border: 1.5px solid var(--surface);
+    color: var(--lavender);
+    background: var(--bg-soft);
+  }
+  .shots { margin: 2.5rem 0 1rem; display: grid; gap: 1.2rem; }
+  .shots img {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid rgba(166, 173, 200, 0.18);
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.35);
+  }
+  .caption { text-align: center; color: var(--muted); font-size: 0.82rem; margin-top: 0.6rem; }
+  section { margin-top: 3.5rem; }
+  h2 {
+    font-size: 1.25rem;
+    color: var(--pink);
+    margin-bottom: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  h2 .dash { color: var(--violet); }
+  .card {
+    background: var(--bg-soft);
+    border: 1px solid rgba(166, 173, 200, 0.12);
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+  }
+  .steps { counter-reset: step; }
+  .step {
+    display: flex;
+    gap: 1.1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px dashed rgba(166, 173, 200, 0.15);
+    align-items: baseline;
+  }
+  .step:last-child { border-bottom: none; }
+  .step::before {
+    counter-increment: step;
+    content: counter(step);
+    flex: none;
+    width: 2rem; height: 2rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--surface);
+    color: var(--pink);
+    font-weight: 700;
+    font-size: 0.9rem;
+    transform: translateY(0.25rem);
+  }
+  .step p { color: var(--muted); }
+  .step b, .step code { color: var(--text); }
+  code {
+    background: var(--surface);
+    padding: 0.12rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.88em;
+    color: var(--lavender);
+  }
+  .cmd {
+    background: var(--bg);
+    border: 1px solid rgba(166, 173, 200, 0.15);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-top: 0.9rem;
+    font-size: 0.92rem;
+    color: var(--blue);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .cmd .prompt { color: var(--pink); user-select: none; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .chip { background: var(--bg-soft); border: 1px solid rgba(166,173,200,0.12); border-radius: 12px; padding: 1rem 1.2rem; }
+  .chip h3 { color: var(--lavender); font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .chip p { color: var(--muted); font-size: 0.85rem; }
+  .thanks { color: var(--muted); font-size: 0.9rem; }
+  .thanks a { color: var(--pink); text-decoration: none; border-bottom: 1px dotted rgba(255,143,208,0.5); }
+  .thanks a:hover { border-bottom-style: solid; }
+  footer { text-align: center; margin-top: 4rem; color: var(--muted); font-size: 0.82rem; }
+  footer .heart { color: var(--pink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>✿ Terminal Config</h1>
+    <p class="tagline">the Windows terminal setup that follows me between reinstall dates —<br>
+    <b>fastfetch</b> · <b>oh-my-posh</b> · <b>JetBrainsMono Nerd Font</b> · <b>Windows Terminal</b></p>
+    <div class="buttons">
+      <a class="btn btn-pink" href="https://github.com/RandomCatUser/terminal-config/archive/refs/heads/main.zip">⬇️ download zip</a>
+      <a class="btn btn-ghost" href="https://github.com/RandomCatUser/terminal-config">🐱 view on github</a>
+    </div>
+  </header>
+
+  <div class="shots">
+    <img src="Screenshots/fastfetch.png" alt="fastfetch — braille cat tinted pink to violet, module keys in pink">
+    <p class="caption">fastfetch — the braille cat, pre-tinted pink → violet</p>
+    <img src="Screenshots/prompt.png" alt="oh-my-posh prompt — blue user, pink path, lavender git branch">
+    <p class="caption">oh-my-posh prompt — blue, pink and lavender, local theme, no network needed</p>
+  </div>
+
+  <section>
+    <h2><span class="dash">──</span> what it does</h2>
+    <div class="card steps">
+      <div class="step"><p>runs <code>install.bat</code> and it <b>asks before it touches anything</b> — every piece is a <code>y / n</code> question, and <code>n</code> cleanly skips that piece</p></div>
+      <div class="step"><p>offers <b>JetBrainsMono Nerd Font</b> first — downloaded from the nerd-fonts release and installed per-user, no admin window</p></div>
+      <div class="step"><p>offers <b>oh-my-posh</b> via winget, then deploys the Catppuccin Mocha theme <b>locally</b> and points every PowerShell profile at the local file — works offline</p></div>
+      <div class="step"><p>restyles <b>Windows Terminal</b> — Mocha colors, JBM NFM 10pt, acrylic glass at 80% — and leaves a <code>settings.json.bak</code> for the undo</p></div>
+      <div class="step"><p>deploys <b>fastfetch</b> config + the tinted cat logo, hash-checks everything, rewrites nothing that already matches, then runs fastfetch as your “it worked” moment</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="dash">──</span> quick start</h2>
+    <div class="card">
+      <p>double-click <code>install.bat</code>, or from a terminal:</p>
+      <div class="cmd"><span class="prompt">❯</span> powershell -ExecutionPolicy Bypass -File install.ps1</div>
+      <p style="margin-top:0.9rem">want a different logo? point <code>regen-logo.ps1</code> at your own braille art, run it, rerun the installer.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="dash">──</span> the pieces</h2>
+    <div class="grid2">
+      <div class="chip"><h3>fastfetch</h3><p>what you see when the terminal opens — keys pink, separator violet, the cat on the left</p></div>
+      <div class="chip"><h3>oh-my-posh</h3><p>a soft prompt: blue user, pink path, lavender git branch — straight from Catppuccin Mocha</p></div>
+      <div class="chip"><h3>JetBrainsMono NF</h3><p>10pt extra-black mono in the terminal; the Nerd Font part makes the icons possible</p></div>
+      <div class="chip"><h3>Windows Terminal</h3><p>Mocha scheme, translucent acrylic, filled box cursor — the glass wall everything sits on</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="dash">──</span> thanks</h2>
+    <div class="card thanks">
+      <p>the terminal styling and the Catppuccin Mocha prompt theme come from
+      <a href="https://github.com/SleepyCatHey/Ultimate-Win11-Setup">SleepyCatHey’s Ultimate-Win11-Setup</a> —
+      the reason this looks the way it does. if this made your terminal nicer, the sleepy cat
+      deserves a star 😺</p>
+      <p style="margin-top:0.7rem">also powered by <a href="https://github.com/fastfetch-cli/fastfetch">fastfetch</a>,
+      <a href="https://github.com/JanDeDobbeleer/oh-my-posh">oh-my-posh</a>,
+      <a href="https://catppuccin.com">Catppuccin</a> and
+      <a href="https://github.com/ryanoasis/nerd-fonts">nerd-fonts</a>.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>made with <span class="heart">♥</span> and too much time choosing pinks</p>
+  </footer>
+
+</div>
+</body>
+</html>
