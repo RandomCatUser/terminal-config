@@ -1,31 +1,34 @@
 # ✿ Terminal Config
 
-hi, this is my entire Windows terminal personality in one folder: **fastfetch**
-with a hand-tinted braille logo, an **oh-my-posh** prompt in Catppuccin Mocha,
-and a **Windows Terminal** look to match — pink fading into violet, glyphs
-from a Nerd Font, subtle acrylic. It installs itself. You just double-click
-and pick a file (or gap) apart later — nothing is forced on you.
+this is the folder that follows me between reinstall dates.
 
-## files
+It's my whole Windows terminal — the fastfetch screen with a braille cat
+tinted pink-to-violet, the oh-my-posh prompt, and the Windows Terminal
+window holding all of it together. It all lives here with a small installer
+alongside it, because every fresh Windows install I ever did ate the vibe
+and got me rebuilding it by hand — and I got tired of that. This way it's
+one double-click. Everything asks before touching a thing, and `no` is a
+first-class answer, not an afterthought.
 
-| file | purpose |
+## what's in the box
+
+| file | what it does |
 | --- | --- |
-| `install.ps1` | the installer — walks through everything, asks before it touches anything |
-| `install.bat` | double-click launcher for `install.ps1` (no execution-policy drama) |
-| `config.jsonc` | fastfetch theme — keys, palette, modules |
-| `logo.txt` | the braille art logo, tinted pink → violet |
-| `catppuccin-mocha.omp.json` | oh-my-posh prompt theme — Catppuccin Mocha |
-| `regen-logo.ps1` | rebuilds `logo.txt` from raw braille art |
-| `README.md` | you are here |
+| `install.ps1` | the brain — takes you step by step, asks permission |
+| `install.bat` | for people who love double-clicking (it handles execution policy for you) |
+| `config.jsonc` | fastfetch — what you see when you open a terminal |
+| `logo.txt` | the braille cat, pre-tinted pink → violet |
+| `catppuccin-mocha.omp.json` | the prompt's theme |
+| `regen-logo.ps1` | repaints `logo.txt` from raw braille art |
+| `README.md` | the notes you're reading |
 
-## quick start
+## how to use it
 
-Double-click `install.bat`. That's it. It runs `install.ps1` with the
-execution policy bypassed and walks you through everything, one small step at
-a time, asking `y` or `n` before each install. Saying **no never breaks
-anything** — it just skips that piece and carries on.
+double-click `install.bat`. if anything needs installing, you get a question
+first: `y` for yes, `n` for no, enter defaults to yes. saying `n` just skips
+that one piece — the rest of the setup carries on without it.
 
-Prefer doing it by hand?
+more of a manual type?
 
 ```
 double-click install.bat
@@ -33,81 +36,74 @@ right-click install.ps1 → Run with PowerShell
 powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
-## the walk-through, step by step
+## what happens when you run it
 
-1. checks the environment — winget, PowerShell version, admin status
-2. **JetBrainsMono Nerd Font** — already installed? green check. If not, it
-   asks first:
-   - `y` downloads the family from the
-     [nerd-fonts releases](https://github.com/ryanoasis/nerd-fonts/releases)
-     and installs it **per-user, no admin needed** — Regular / Bold / Italic /
-     BoldItalic for both `JetBrainsMono Nerd Font` and
-     `JetBrainsMono Nerd Font Mono`
-   - `n` skip, and the glyphs will politely stay as boxes until you set a
-     Nerd Font yourself
-3. **oh-my-posh** — same deal, asked first:
-   - `y` installs via winget (`JanDeDobbeleer.OhMyPosh`), retrying elevated
-     only if the installer truly needs it
-   - `n` prompt and terminal look stay untouched
-4. **prompt + terminal look** — drops `catppuccin-mocha.omp.json` into
-   `%USERPROFILE%\.config\oh-my-posh` and re-points every PowerShell profile
-   (Windows PowerShell and PowerShell 7) at the **local copy**, so the prompt
-   works offline. It then asks before touching Windows Terminal's
-   `settings.json`: Catppuccin Mocha scheme, JetBrainsMono Nerd Font Mono at
-   10pt extra-black, 1.2 line height, 80% acrylic, `filledBox` cursor. A
-   `settings.json.bak` lands next to your settings before a single character
-   changes.
-5. **fastfetch** — asked first:
-   - `y` winget (`Fastfetch.cli.Fastfetch`), elevation retry if needed
-   - `n` config still deploys, only the preview gets skipped
-6. deploys `config.jsonc`, `logo.txt` and `README.md` into
-   `%USERPROFILE%\.config\fastfetch`, and rewrites the logo `source` path so
-   it always points at the deployed logo — the whole thing stays portable
-7. runs fastfetch once so you can admire it immediately
+- asks whether you want **JetBrainsMono Nerd Font**. it checks your registry
+  and font folders first, so if you've already got it, it quietly says
+  "already installed" and moves on. if you don't and you say yes, it
+  downloads the family straight from the
+  [nerd-fonts release](https://github.com/ryanoasis/nerd-fonts/releases) and
+  installs it *per-user* — no admin window, no ceremony. you can say no; the
+  glyphs just wait as boxes until you pick a Nerd Font yourself.
+- asks whether you want **oh-my-posh**. same pattern: winget if missing, and
+  it only escalates to admin when the installer genuinely demands it.
+- then, if you're in, it puts the prompt theme on disk in
+  `%USERPROFILE%\.config\oh-my-posh` and points every PowerShell profile it
+  finds — Windows PowerShell and PowerShell 7 — at the **local file**, so
+  your prompt loads even with no internet. it also offers to restyle
+  **Windows Terminal** to match: Catppuccin Mocha colors, JetBrainsMono
+  Nerd Font Mono at 10pt extra-black, gentle 1.2 line height, translucent
+  acrylic at 80%, a chunky `filledBox` cursor. before it edits your
+  `settings.json`, it leaves a `settings.json.bak` copy right next to it —
+  so there's always an undo.
+- asks whether you want **fastfetch**, and if yes, winget again.
+- copies the config, the logo and this readme into
+  `%USERPROFILE%\.config\fastfetch`, and quietly fixes the logo path inside
+  the deployed config so it always points at the deployed file.
+- finally, it runs fastfetch right in front of you. that's your "it worked"
+  moment.
 
-Everything is hash-compared on rerun: `unchanged` beats `deployed` when files
-already match, so **rerunning is always safe**.
+rerun it any time — every file is hash-checked, so things that already match
+report as `unchanged` and nothing is rewritten for the fun of it.
 
-## theming
+## the look
 
-fastfetch auto-loads `%USERPROFILE%\.config\fastfetch\config.jsonc`.
+fastfetch reads `%USERPROFILE%\.config\fastfetch\config.jsonc` by default.
 
-- keys + title: pink `#ff8fd0`
-- separator: violet `#7a6bf2`
-- modules: OS · Kernel · Uptime · Shell · Terminal · TerminalFont · Colors
+- keys and title in pink `#ff8fd0`
+- separator in violet `#7a6bf2`
+- OS · Kernel · Uptime · Shell · Terminal · TerminalFont · Colors
 
-The prompt reads the Catppuccin Mocha theme from
-`~\.config\oh-my-posh` locally — no network needed after install. Want to try
-another theme? Drop any `*.omp.json` replacing `catppuccin-mocha.omp.json`
-here, rerun the installer, and every profile gets re-pointed automatically.
+the prompt comes from `~\.config\oh-my-posh` — no network involved after
+install. curious about another theme? drop any `*.omp.json` over
+`catppuccin-mocha.omp.json` here and rerun; the profiles get re-pointed for
+you.
 
-## regenerating the logo
+## swapping the logo
 
-1. point the two paths at the top of `regen-logo.ps1` at your raw braille
-   art file and the deployed `logo.txt`
-2. run `regen-logo.ps1`
-3. rerun the installer to redeploy — `unchanged` / `deployed` tells you
-   honestly whether anything moved
+point the two paths at the top of `regen-logo.ps1` at your raw braille art
+and your deployed `logo.txt`, run it, then rerun the installer. the
+`unchanged` / `deployed` readout tells you if anything actually moved.
 
-## uninstall
+## leaving
 
 ```
 winget uninstall Fastfetch.cli.Fastfetch
 ```
 
-and delete `%USERPROFILE%\.config\fastfetch` (plus `~\.config\oh-my-posh`)
-if you want the theme gone too. Windows Terminal keeps its own backups.
+…along with `%USERPROFILE%\.config\fastfetch` and `~\.config\oh-my-posh` if
+you want the pastels gone completely. Windows Terminal keeps its own backups,
+so nothing there should surprise you.
 
-## credits ❤
+## thanks ❤
 
-- **[SleepyCatHey → Ultimate-Win11-Setup](https://github.com/SleepyCatHey/Ultimate-Win11-Setup)**
-  — the tastemaker behind all of this. The terminal styling and the
-  Catppuccin Mocha **oh-my-posh** theme are lifted from that wonderful
-  Windows 11 setup guide. If this repo prettified your terminal, go give the
-  sleepy cat a star, it earned it 😺
-- [fastfetch](https://github.com/fastfetch-cli/fastfetch) — the fetch
-- [oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) — the prompt
-- [Catppuccin](https://catppuccin.com) — the pastel palette
-- [nerd-fonts](https://github.com/ryanoasis/nerd-fonts) — the glyphs
-- [Windows Terminal](https://github.com/microsoft/terminal) — the window that
-  makes all the colors possible
+- [SleepyCatHey — Ultimate-Win11-Setup](https://github.com/SleepyCatHey/Ultimate-Win11-Setup)
+  · the reason this looks the way it does. my terminal style and the
+  Catppuccin Mocha oh-my-posh theme come straight out of that guide — if this
+  repo made your terminal nicer, the sleepy cat deserves a star for it 😺
+- [fastfetch](https://github.com/fastfetch-cli/fastfetch) · the fetch
+- [oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) · the prompt
+- [Catppuccin](https://catppuccin.com) · the palette this whole thing sits on
+- [nerd-fonts](https://github.com/ryanoasis/nerd-fonts) · the glyphs
+- [Windows Terminal](https://github.com/microsoft/terminal) · the glass wall
+  these colors live on
