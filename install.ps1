@@ -3,6 +3,10 @@
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [Text.Encoding]::UTF8
 try {
+  $Host.UI.RawUI.WindowTitle = 'Terminal Config'
+} catch {
+}
+try {
   Add-Type -Namespace 'Fastfetch.Setup' -Name 'ConsoleApi' -MemberDefinition @'
 [DllImport("kernel32.dll")] public static extern IntPtr GetStdHandle(int n);
 [DllImport("kernel32.dll")] public static extern bool GetConsoleMode(IntPtr h, ref int m);
